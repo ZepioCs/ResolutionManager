@@ -1,6 +1,6 @@
 {
   "name": "resolutionmanager",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Resolution Manager",
   "main": "./out/main/index.js",
   "author": "zepiocs",
@@ -19,13 +19,14 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "publish:win": "npm run build && electron-builder --win --publish always",
-    "generate-update-files": "node scripts/generate-update-files.mjs"
+    "publish:win": "dotenv -- cross-env-shell \"npm run build:win && electron-builder --win --publish always\""
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "antd": "^5.15.3",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^8.0.0",
     "electron-log": "^5.3.1",
     "electron-updater": "^6.3.9",
     "mobx": "^6.12.0",

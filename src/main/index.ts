@@ -278,8 +278,18 @@ app.whenReady().then(() => {
     return app.getLoginItemSettings()
   })
 
-  ipcMain.on('set-login-item-settings', (_, options) => {
-    app.setLoginItemSettings(options)
+  ipcMain.on('set-login-item-settings', (_, shouldOpenAtLogin) => {
+    // Fix: Ensure we're passing a proper options object to setLoginItemSettings
+    if (typeof shouldOpenAtLogin === 'boolean') {
+      app.setLoginItemSettings({
+        openAtLogin: shouldOpenAtLogin,
+        // On Windows 10/11, use the app's path as the path parameter
+        path: process.execPath
+      })
+      logWithTime(`Set login item settings: openAtLogin=${shouldOpenAtLogin}`)
+    } else {
+      logWithTime('Error: Invalid login item settings parameter', shouldOpenAtLogin)
+    }
   })
 
   ipcMain.handle('get-path', (_, path) => {

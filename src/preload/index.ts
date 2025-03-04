@@ -57,8 +57,8 @@ interface UpdateInfo {
 const api = {
   getLoginItemSettings: (): Promise<Electron.LoginItemSettings> =>
     ipcRenderer.invoke('get-login-item-settings'),
-  setLoginItemSettings: (options: boolean): void =>
-    ipcRenderer.send('set-login-item-settings', options),
+  setLoginItemSettings: (openAtLogin: boolean): void =>
+    ipcRenderer.send('set-login-item-settings', openAtLogin),
   getPath: (path: string): Promise<string> => ipcRenderer.invoke('get-path', path),
   writeFileSync: (path: string, data: string): void =>
     ipcRenderer.send('write-file-sync', { path, data }),

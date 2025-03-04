@@ -51,7 +51,7 @@ interface UpdateInfo {
 
 interface ResolutionAPI {
   getLoginItemSettings: () => Promise<Electron.LoginItemSettings>
-  setLoginItemSettings: (options: boolean) => void
+  setLoginItemSettings: (openAtLogin: boolean) => void
   getPath: (path: string) => Promise<string>
   writeFileSync: (path: string, data: string) => void
   readFileSync: (path: string, encoding: string) => Promise<string>
