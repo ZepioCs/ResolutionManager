@@ -1,10 +1,17 @@
 import { app, dialog, BrowserWindow } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
+import { is } from '@electron-toolkit/utils'
 
 // Configure logging
 log.transports.file.level = 'info'
 autoUpdater.logger = log
+
+// For development testing
+if (is.dev) {
+  // In development, we can use a local file path for testing
+  autoUpdater.forceDevUpdateConfig = true
+}
 
 // Variables to track update state
 let updateAvailable = false
@@ -19,8 +26,9 @@ export function initAutoUpdater(window: BrowserWindow): void {
   mainWindow = window
 
   // Check for updates immediately when the app starts
-  // but only in production builds
-  if (app.isPackaged) {
+  // In production builds, we always check
+  // In development, we only check if forceDevUpdateConfig is true
+  if (app.isPackaged || (is.dev && autoUpdater.forceDevUpdateConfig)) {
     setTimeout(() => {
       checkForUpdates()
     }, 3000) // Wait 3 seconds after app start
@@ -35,7 +43,8 @@ export function initAutoUpdater(window: BrowserWindow): void {
  * @returns Promise that resolves with update check result
  */
 export async function checkForUpdates(): Promise<{ updateAvailable: boolean }> {
-  if (!app.isPackaged) {
+  // In development, only check if forceDevUpdateConfig is true
+  if (!app.isPackaged && !autoUpdater.forceDevUpdateConfig) {
     return { updateAvailable: false }
   }
 

@@ -6,6 +6,7 @@ import fs from 'fs'
 import monitor from 'monitorres'
 import path from 'path'
 import { createTray, destroyTray, isForceQuit } from './tray'
+import { initAutoUpdater, checkForUpdates, installUpdate, getUpdateStatus } from './updater'
 
 // Cast monitor to our extended interface
 const monitorLib = monitor
@@ -132,6 +133,12 @@ function createWindow(): void {
 
   // Create the tray icon
   createTray(mainWindow)
+
+  // Initialize the auto-updater with the main window
+  initAutoUpdater(mainWindow)
+
+  // Set app version in the process.versions object so it's accessible from the renderer
+  process.versions.app = app.getVersion()
 }
 
 // Check if configuration files exist
@@ -590,6 +597,19 @@ app.whenReady().then(() => {
       logWithTime('Error applying saved configuration:', error)
       return { success: false, error: error instanceof Error ? error.message : String(error) }
     }
+  })
+
+  // Add IPC handlers for auto-update functionality
+  ipcMain.handle('check-for-updates', async () => {
+    return await checkForUpdates()
+  })
+
+  ipcMain.handle('install-update', () => {
+    installUpdate()
+  })
+
+  ipcMain.handle('get-update-status', () => {
+    return getUpdateStatus()
   })
 
   createWindow()

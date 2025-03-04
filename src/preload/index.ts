@@ -44,6 +44,15 @@ interface FileOperationResult {
   error?: string
 }
 
+// Define update info interface
+interface UpdateInfo {
+  version: string
+  files: Array<{ url: string; sha512: string; size: number }>
+  path: string
+  sha512: string
+  releaseDate: string
+}
+
 // Custom APIs for renderer
 const api = {
   getLoginItemSettings: (): Promise<Electron.LoginItemSettings> =>
@@ -104,7 +113,48 @@ const api = {
   },
   setMinimizeToTray: (value: boolean): void => ipcRenderer.send('set-minimize-to-tray', value),
   getMinimizeToTray: (): Promise<boolean> => ipcRenderer.invoke('get-minimize-to-tray'),
-  quitApplication: (): void => ipcRenderer.send('quit-application')
+  quitApplication: (): void => ipcRenderer.send('quit-application'),
+  checkForUpdates: (): Promise<{ updateAvailable: boolean }> =>
+    ipcRenderer.invoke('check-for-updates'),
+  installUpdate: (): Promise<void> => ipcRenderer.invoke('install-update'),
+  getUpdateStatus: (): Promise<{ updateAvailable: boolean; updateDownloaded: boolean }> =>
+    ipcRenderer.invoke('get-update-status'),
+  onUpdateAvailable: (callback: (info: UpdateInfo) => void): (() => void) => {
+    const listener = (_: Electron.IpcRendererEvent, info: UpdateInfo): void => callback(info)
+    ipcRenderer.on('update-available', listener)
+    return () => {
+      ipcRenderer.removeListener('update-available', listener)
+    }
+  },
+  onUpdateNotAvailable: (callback: () => void): (() => void) => {
+    const listener = (): void => callback()
+    ipcRenderer.on('update-not-available', listener)
+    return () => {
+      ipcRenderer.removeListener('update-not-available', listener)
+    }
+  },
+  onUpdateDownloaded: (callback: (info: UpdateInfo) => void): (() => void) => {
+    const listener = (_: Electron.IpcRendererEvent, info: UpdateInfo): void => callback(info)
+    ipcRenderer.on('update-downloaded', listener)
+    return () => {
+      ipcRenderer.removeListener('update-downloaded', listener)
+    }
+  },
+  onUpdateError: (callback: (error: string) => void): (() => void) => {
+    const listener = (_: Electron.IpcRendererEvent, error: string): void => callback(error)
+    ipcRenderer.on('update-error', listener)
+    return () => {
+      ipcRenderer.removeListener('update-error', listener)
+    }
+  },
+  onUpdateProgress: (callback: (progressObj: { percent: number }) => void): (() => void) => {
+    const listener = (_: Electron.IpcRendererEvent, progressObj: { percent: number }): void =>
+      callback(progressObj)
+    ipcRenderer.on('update-progress', listener)
+    return () => {
+      ipcRenderer.removeListener('update-progress', listener)
+    }
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -40,6 +40,15 @@ interface ConfigFilesStatus {
   monitorLabels: boolean
 }
 
+// Update info interface
+interface UpdateInfo {
+  version: string
+  files: Array<{ url: string; sha512: string; size: number }>
+  path: string
+  sha512: string
+  releaseDate: string
+}
+
 interface ResolutionAPI {
   getLoginItemSettings: () => Promise<Electron.LoginItemSettings>
   setLoginItemSettings: (options: boolean) => void
@@ -97,6 +106,15 @@ interface ResolutionAPI {
   getMinimizeToTray: () => Promise<boolean>
   // Application control
   quitApplication: () => void
+  // Auto-update API
+  checkForUpdates: () => Promise<{ updateAvailable: boolean }>
+  installUpdate: () => Promise<void>
+  getUpdateStatus: () => Promise<{ updateAvailable: boolean; updateDownloaded: boolean }>
+  onUpdateAvailable: (callback: (info: UpdateInfo) => void) => () => void
+  onUpdateNotAvailable: (callback: () => void) => () => void
+  onUpdateDownloaded: (callback: (info: UpdateInfo) => void) => () => void
+  onUpdateError: (callback: (error: string) => void) => () => void
+  onUpdateProgress: (callback: (progressObj: { percent: number }) => void) => () => void
 }
 
 interface FavoritesAPI {
@@ -104,6 +122,15 @@ interface FavoritesAPI {
   updateMonitorLabels: (labels: IMonitorLabel[]) => void
   onApplyFavorite: (callback: (resolution: IResolution, monitorId?: string) => void) => void
   onRequestFavorites: (callback: () => void) => void
+}
+
+// Extend the NodeJS.ProcessVersions interface to include our app version
+declare global {
+  namespace NodeJS {
+    interface ProcessVersions {
+      app: string
+    }
+  }
 }
 
 declare global {

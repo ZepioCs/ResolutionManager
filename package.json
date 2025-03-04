@@ -1,6 +1,6 @@
 {
   "name": "resolutionmanager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Resolution Manager",
   "main": "./out/main/index.js",
   "author": "zepiocs",
@@ -24,6 +24,7 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "antd": "^5.15.3",
+    "electron-log": "^5.3.1",
     "electron-updater": "^6.3.9",
     "mobx": "^6.12.0",
     "mobx-react": "^9.1.0",

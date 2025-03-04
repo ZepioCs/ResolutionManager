@@ -7,10 +7,12 @@ import {
   CloseCircleOutlined,
   FileOutlined,
   ReloadOutlined,
-  PoweroffOutlined
+  PoweroffOutlined,
+  CloudSyncOutlined
 } from '@ant-design/icons'
 import { appStore } from '../../stores/App.store'
 import { appData } from '../../stores/App.data'
+import { UpdateManager } from '../UpdateManager'
 
 const { Text, Paragraph } = Typography
 
@@ -146,6 +148,23 @@ export const Settings = observer(() => {
               />
             </div>
           </Space>
+        </Card>
+
+        <Card
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', color: textColor }}>
+              <CloudSyncOutlined style={{ marginRight: '8px' }} />
+              <span>Updates</span>
+            </div>
+          }
+          bordered
+          style={{
+            borderRadius: '8px',
+            overflow: 'hidden',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
+          }}
+        >
+          <UpdateManager />
         </Card>
 
         <Card
@@ -290,9 +309,9 @@ export const Settings = observer(() => {
 
         <Card
           title={
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', color: textColor }}>
               <PoweroffOutlined style={{ marginRight: '8px' }} />
-              <span>Application Control</span>
+              <span>Quit Application</span>
             </div>
           }
           bordered
