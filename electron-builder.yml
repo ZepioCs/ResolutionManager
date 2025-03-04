@@ -21,6 +21,8 @@ win:
     - target: portable
       arch:
         - x64
+  # Ensure we generate the latest.yml file
+  artifactName: '${productName}-${version}-${arch}.${ext}'
 portable:
   artifactName: 'ResolutionManager-Portable-${version}.exe'
   requestExecutionLevel: 'admin'
